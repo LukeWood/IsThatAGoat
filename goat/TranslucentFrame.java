@@ -7,14 +7,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
-import java.io.IOException;
 import java.util.Random;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JWindow;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 public class TranslucentFrame {
@@ -53,7 +49,8 @@ public class TranslucentFrame {
         });
     }
 
-    public class TranslucentPane extends JPanel {
+    @SuppressWarnings("serial")
+	public class TranslucentPane extends JPanel {
 
         public TranslucentPane() {
             setOpaque(false);

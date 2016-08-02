@@ -1,12 +1,10 @@
 package goat;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -24,6 +22,7 @@ public class Goat extends JComponent implements Runnable
 	private int frame = 0;
 	
 	private Image[] walking = null;
+	@SuppressWarnings("unused")
 	private Image[] standing = null;
 	
 	private Image[] frames = null;
@@ -42,10 +41,16 @@ public class Goat extends JComponent implements Runnable
 	
 	public final static Point GRAY = new Point(0,0), TAN = new Point(1,0), BLACK = new Point(2,0), DARKGRAY = new Point(3,0), WHITE = new Point(0,1), LIGHTBROWN =  new Point(1,1), DARKBROWN =  new Point(2,1), BROWN =  new Point(3,1);
 	public final static Point[] COLORS = new Point[]{GRAY,TAN,BLACK,DARKGRAY,WHITE,LIGHTBROWN,DARKBROWN,BROWN};
-	int action = 1;
 	int framecount = 0;
 	
-	public final static int STANDING = 0, WALKING = 1, JUMP = 2, DIE = 3;
+	
+	Action action = Action.WALKING;
+
+	//All of the actions a goat can do
+	private enum Action
+	{
+		STANDING,WALKING,JUMP,DIE
+	}
 		
 	public Goat(JWindow frame, Point color)
 	{
@@ -70,14 +75,14 @@ public class Goat extends JComponent implements Runnable
 		new Thread(this).start();
 	}
 	
-	public void setAction(int action)
+	public void setAction(Action action)
 	{
 		this.action = action;
 	}
 	
 	private void goatAction()
 	{
-		if(action == WALKING)
+		if(action == Action.WALKING)
 		{
 			x+=direction*speed;
 			if(framecount++ == 3)
@@ -93,16 +98,16 @@ public class Goat extends JComponent implements Runnable
 			if(!((x > width - GOATWIDTH && direction ==1) || (x < GOATWIDTH && direction == -1))&&r.nextDouble() > .993)
 				switchDirection();
 		}
-		if(action == STANDING)
+		if(action == Action.STANDING)
 		{
 			long duration = (long) r.nextInt(10000);
 			try {
 				Thread.sleep(duration);
 			} catch (InterruptedException e) {
 			}
-			action = WALKING;
+			action = Action.WALKING;
 		}
-		if(action == JUMP)
+		if(action == Action.JUMP)
 		{
 			int idirection = direction;
 			Point destination = calculationJumpLocation();
@@ -153,9 +158,9 @@ public class Goat extends JComponent implements Runnable
 			}
 			direction = idirection;
 			parent.repaint();
-			action = WALKING;
+			action = Action.WALKING;
 		}
-		if(action == DIE){
+		if(action == Action.DIE){
 			frame = 1;
 			parent.repaint();
 		}
@@ -190,8 +195,8 @@ public class Goat extends JComponent implements Runnable
 			parent.setLocation(x, y);
 			if(r.nextDouble()>.999)
 			{
-				if(action == WALKING) {
-					action = JUMP;
+				if(action == Action.WALKING) {
+					action = Action.JUMP;
 					frames = walking;
 					frame = 1;
 				}
