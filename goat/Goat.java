@@ -39,8 +39,27 @@ public class Goat extends JComponent implements Runnable
 	
 	private final static int SPRITEWIDTH = 48,SPRITEHEIGHT = 48;
 	
-	public final static Point GRAY = new Point(0,0), TAN = new Point(1,0), BLACK = new Point(2,0), DARKGRAY = new Point(3,0), WHITE = new Point(0,1), LIGHTBROWN =  new Point(1,1), DARKBROWN =  new Point(2,1), BROWN =  new Point(3,1);
-	public final static Point[] COLORS = new Point[]{GRAY,TAN,BLACK,DARKGRAY,WHITE,LIGHTBROWN,DARKBROWN,BROWN};
+	public enum COLOR
+	{
+		GRAY(0,0),
+		TAN(1,0),
+		BLACK(2,0),
+		DARKGRAY(3,0),
+		WHITE(0,1),
+		LIGHTBROWN(1,1),
+		DARKBROWN(2,1),
+		BROWN(3,1);
+		int x;
+		int y;
+		
+		COLOR(int x, int y)
+		{
+			this.x = x;
+			this.y = y;
+		}
+	}
+	
+	public final static COLOR[] COLORS = new COLOR[]{COLOR.GRAY,COLOR.TAN,COLOR.BLACK,COLOR.DARKGRAY,COLOR.WHITE,COLOR.LIGHTBROWN,COLOR.DARKBROWN,COLOR.BROWN};
 	int framecount = 0;
 	
 	
@@ -52,7 +71,7 @@ public class Goat extends JComponent implements Runnable
 		STANDING,WALKING,JUMP,DIE
 	}
 		
-	public Goat(JWindow frame, Point color)
+	public Goat(JWindow frame, COLOR colors2)
 	{
 		super();
 		try{
@@ -60,7 +79,7 @@ public class Goat extends JComponent implements Runnable
 			walking = new Image[3];
 			for(int i = 0; i < 3; i++)
 			{
-				walking[i] = master.getSubimage((color.x*3) * SPRITEWIDTH+ SPRITEWIDTH* i , ((color.y*4) + 2)*SPRITEHEIGHT, SPRITEWIDTH,SPRITEHEIGHT);
+				walking[i] = master.getSubimage((colors2.x*3) * SPRITEWIDTH+ SPRITEWIDTH* i , ((colors2.y*4) + 2)*SPRITEHEIGHT, SPRITEWIDTH,SPRITEHEIGHT);
 			}
 		}catch(IOException e){e.printStackTrace();}
 		frames = walking;
