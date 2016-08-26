@@ -1,10 +1,12 @@
 package goat;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Random;
@@ -13,15 +15,45 @@ import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 import javax.swing.JWindow;
 
-@SuppressWarnings("serial")
 public class Goat extends JComponent implements Runnable
 {
-	private Random r = new Random();
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8298751448893596967L;
+
+	/*
+	 * program wide constants.
+	 */
+	public static int width;
+	public static int height;
+	static
+	{
+		//Graphics environment fails on a few machines
+		//Toolkit works, but it can fail on multiple monitor setups.  This is only as a backup plan.
+		try
+		{
+			GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
+			GraphicsDevice[] devices = g.getScreenDevices();
+			width = devices[0].getDisplayMode().getWidth();
+			height = devices[0].getDisplayMode().getHeight();
+		}
+		catch(Exception e)
+		{
+			Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+			width = dim.width;
+			height = dim.height;
+		}
+	}
+	
+	private static final Random r = new Random();
 
 	private JWindow parent;
 	private int frame = 0;
 	
 	private Image[] walking = null;
+	
+	//unimplemented feature, I'll get around to this.  Don't worry.
 	@SuppressWarnings("unused")
 	private Image[] standing = null;
 	
@@ -29,17 +61,14 @@ public class Goat extends JComponent implements Runnable
 	
 	private int x = 0;
 	private int y = 0;
-	int direction = 1;
-	int speed = 1;
-	GraphicsEnvironment g = GraphicsEnvironment.getLocalGraphicsEnvironment();
-	GraphicsDevice[] devices = g.getScreenDevices();
-	private int width = devices[0].getDisplayMode().getWidth();
-	private int height = devices[0].getDisplayMode().getHeight();
+	private int direction = 1;
+	private int speed = 1;
+	private int framecount = 0;
+
 	private final static int GOATWIDTH = 200, GOATHEIGHT = 200;
-	
 	private final static int SPRITEWIDTH = 48,SPRITEHEIGHT = 48;
 	
-	public enum COLOR
+	public static enum COLOR
 	{
 		GRAY(0,0),
 		TAN(1,0),
@@ -58,13 +87,11 @@ public class Goat extends JComponent implements Runnable
 			this.y = y;
 		}
 	}
-	
 	public final static COLOR[] COLORS = new COLOR[]{COLOR.GRAY,COLOR.TAN,COLOR.BLACK,COLOR.DARKGRAY,COLOR.WHITE,COLOR.LIGHTBROWN,COLOR.DARKBROWN,COLOR.BROWN};
-	int framecount = 0;
+	//just has all the colors for a random color
 	
 	
-	Action action = Action.WALKING;
-
+	private Action action = Action.WALKING;
 	//All of the actions a goat can do
 	private enum Action
 	{
@@ -84,13 +111,9 @@ public class Goat extends JComponent implements Runnable
 		}catch(IOException e){e.printStackTrace();}
 		frames = walking;
 		this.parent = frame;
-		Point loc = calculationJumpLocation();
-		this.setLocation(0,0);
-		parent.setLocation(loc.x,loc.y);
 		this.setSize(GOATWIDTH,GOATHEIGHT);
-		y = height - GOATHEIGHT;
-		parent.setLocation(0, height-GOATHEIGHT-10);
-		
+		setLocation(r.nextInt(width),r.nextInt(height));
+
 		new Thread(this).start();
 	}
 	
@@ -184,7 +207,7 @@ public class Goat extends JComponent implements Runnable
 			parent.repaint();
 		}
 	}
-	
+
 	private Point calculationJumpLocation() 
 	{
 		return new Point(r.nextInt(width-GOATWIDTH),r.nextInt(height-GOATHEIGHT));
@@ -204,7 +227,11 @@ public class Goat extends JComponent implements Runnable
 			g.drawImage(frames[frame], GOATWIDTH, 0,GOATWIDTH*direction,GOATHEIGHT, null);
 	}
 
-	
+	@Override public void setLocation(int x, int y)
+	{
+		this.x = x;
+		this.y = y;
+	}
 	@Override
 	public void run() 
 	{

@@ -3,7 +3,7 @@ package goat;
 import javax.swing.JOptionPane;
 
 public class Launcher {
-
+	//Why would anyone only want 1 goat.  Give people options.
 	public static void main(String[] args) 
 	{
 		String answer = JOptionPane.showInputDialog("How many goats would you like?");
@@ -11,5 +11,4 @@ public class Launcher {
 		for(int i = 0; i < numGoats; i++)
 			new TranslucentFrame();
 	}
-
 }

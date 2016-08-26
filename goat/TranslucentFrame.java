@@ -15,10 +15,6 @@ import javax.swing.UIManager;
 
 public class TranslucentFrame {
 
-    public static void main(String[] args) {
-        new TranslucentFrame();
-    }
-
     public TranslucentFrame() {
         EventQueue.invokeLater(new Runnable() {
             @Override
@@ -44,6 +40,7 @@ public class TranslucentFrame {
 				frame.add(g);
 				frame.setLayout(null);
 				frame.setSize(g.getWidth(),g.getHeight());
+				
 				frame.setVisible(true);
             }
         });
